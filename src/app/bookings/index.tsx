@@ -86,7 +86,6 @@ export default function MyBookingsScreen() {
       hour12: true,
     });
   };
-
   const getStatusStyle = (status: Booking['status']) => {
     switch (status) {
       case 'confirmed':
