@@ -25,6 +25,7 @@ export type VehicleInfo = {
 export type Booking = {
   _id: string;
   user: string;
+
   station: {
     _id: string;
     name: string;
@@ -33,10 +34,15 @@ export type Booking = {
     images?: string[];
     amenities?: string[];
   };
+
   startTime: string;
   endTime: string;
   duration: number;
   totalCost: number;
+
+  // Energy consumed by the vehicle
+  energyConsumed?: number;
+
   status:
     | 'pending'
     | 'confirmed'
@@ -44,7 +50,9 @@ export type Booking = {
     | 'completed'
     | 'cancelled'
     | 'no-show';
+
   vehicleInfo: VehicleInfo;
+
   paymentStatus?: string;
   paymentMethod?: string;
   createdAt?: string;

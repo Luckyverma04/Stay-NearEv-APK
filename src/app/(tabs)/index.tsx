@@ -26,15 +26,20 @@ import stationService, {
 } from '../../services/stationService';
 
 export default function HomeScreen() {
-  const [stations, setStations] = useState<Station[]>([]);
+  const [stations, setStations] =
+    useState<Station[]>([]);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] =
+    useState('');
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] =
+    useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] =
+    useState(false);
 
   useEffect(() => {
     fetchStations();
@@ -42,9 +47,19 @@ export default function HomeScreen() {
   }, []);
 
   const checkLogin = async () => {
-    const token = await AsyncStorage.getItem('token');
+    try {
+      const token =
+        await AsyncStorage.getItem('token');
 
-    setIsLoggedIn(Boolean(token));
+      setIsLoggedIn(Boolean(token));
+    } catch (error) {
+      console.error(
+        '❌ Login check error:',
+        error
+      );
+
+      setIsLoggedIn(false);
+    }
   };
 
   const fetchStations = async () => {
@@ -104,9 +119,20 @@ export default function HomeScreen() {
     0
   );
 
+  // =====================================================
+  // PROFILE BUTTON
+  // =====================================================
+
+  const handleProfilePress = () => {
+    if (isLoggedIn) {
+      router.push('/profile');
+    } else {
+      router.push('/auth/login');
+    }
+  };
+
   return (
     <View style={styles.screen}>
-
       <FlatList
         data={filteredStations}
         keyExtractor={(item) => item._id}
@@ -122,15 +148,14 @@ export default function HomeScreen() {
             tintColor="#00E5A8"
           />
         }
-
         ListHeaderComponent={
           <>
-
-            {/* ───────── HEADER ───────── */}
+            {/* =====================================================
+                HEADER
+            ===================================================== */}
 
             <View style={styles.header}>
-
-              <View>
+              <View style={styles.logoContainer}>
                 <Text style={styles.smallGreeting}>
                   Welcome to
                 </Text>
@@ -143,18 +168,16 @@ export default function HomeScreen() {
                 </Text>
               </View>
 
+              {/* PROFILE / LOGIN BUTTON */}
+
               <Pressable
                 style={styles.headerButton}
-                onPress={() => {
-                  if (isLoggedIn) {
-                    router.push(
-                      '/bookings'
-                    );
-                  } else {
-                    router.push(
-                      '/auth/login'
-                    );
-                  }
+                onPress={handleProfilePress}
+                hitSlop={{
+                  top: 8,
+                  bottom: 8,
+                  left: 8,
+                  right: 8,
                 }}
               >
                 <Ionicons
@@ -163,14 +186,15 @@ export default function HomeScreen() {
                       ? 'person-outline'
                       : 'log-in-outline'
                   }
-                  size={21}
+                  size={22}
                   color="#00E5A8"
                 />
               </Pressable>
-
             </View>
 
-            {/* ───────── HERO ───────── */}
+            {/* =====================================================
+                HERO
+            ===================================================== */}
 
             <LinearGradient
               colors={[
@@ -180,11 +204,9 @@ export default function HomeScreen() {
               ]}
               style={styles.hero}
             >
-
               <View style={styles.heroGlow} />
 
               <View style={styles.heroContent}>
-
                 <View style={styles.heroBadge}>
                   <Ionicons
                     name="flash"
@@ -216,9 +238,7 @@ export default function HomeScreen() {
                 <Pressable
                   style={styles.bookButton}
                   onPress={() =>
-                    router.push(
-                      '/bookings'
-                    )
+                    router.push('/bookings')
                   }
                 >
                   <Ionicons
@@ -237,12 +257,11 @@ export default function HomeScreen() {
                     color="#020617"
                   />
                 </Pressable>
-
               </View>
 
               {/* EV Illustration */}
-              <View style={styles.heroIconContainer}>
 
+              <View style={styles.heroIconContainer}>
                 <View style={styles.pulseCircle}>
                   <Ionicons
                     name="flash"
@@ -255,15 +274,14 @@ export default function HomeScreen() {
                   <View style={styles.energyDot} />
                   <View style={styles.energyDot2} />
                 </View>
-
               </View>
-
             </LinearGradient>
 
-            {/* ───────── STATS ───────── */}
+            {/* =====================================================
+                STATS
+            ===================================================== */}
 
             <View style={styles.statsRow}>
-
               <View style={styles.statCard}>
                 <Ionicons
                   name="flash"
@@ -311,13 +329,13 @@ export default function HomeScreen() {
                   Uptime
                 </Text>
               </View>
-
             </View>
 
-            {/* ───────── SEARCH ───────── */}
+            {/* =====================================================
+                SEARCH
+            ===================================================== */}
 
             <View style={styles.searchContainer}>
-
               <Ionicons
                 name="search"
                 size={21}
@@ -335,9 +353,7 @@ export default function HomeScreen() {
 
               {searchTerm.length > 0 && (
                 <Pressable
-                  onPress={() =>
-                    setSearchTerm('')
-                  }
+                  onPress={() => setSearchTerm('')}
                 >
                   <Ionicons
                     name="close-circle"
@@ -346,13 +362,13 @@ export default function HomeScreen() {
                   />
                 </Pressable>
               )}
-
             </View>
 
-            {/* ───────── SECTION HEADER ───────── */}
+            {/* =====================================================
+                SECTION HEADER
+            ===================================================== */}
 
             <View style={styles.sectionHeader}>
-
               <View>
                 <Text style={styles.sectionTitle}>
                   Nearby Stations
@@ -371,14 +387,14 @@ export default function HomeScreen() {
                   LIVE
                 </Text>
               </View>
-
             </View>
 
-            {/* ───────── LOADING ───────── */}
+            {/* =====================================================
+                LOADING
+            ===================================================== */}
 
             {loading && (
               <View style={styles.loadingContainer}>
-
                 <ActivityIndicator
                   size="large"
                   color="#00E5A8"
@@ -387,16 +403,16 @@ export default function HomeScreen() {
                 <Text style={styles.loadingText}>
                   Finding charging stations...
                 </Text>
-
               </View>
             )}
 
-            {/* ───────── EMPTY ───────── */}
+            {/* =====================================================
+                EMPTY
+            ===================================================== */}
 
             {!loading &&
               filteredStations.length === 0 && (
                 <View style={styles.emptyContainer}>
-
                   <View style={styles.emptyIcon}>
                     <Ionicons
                       name="flash-outline"
@@ -413,13 +429,10 @@ export default function HomeScreen() {
                     Try searching with another
                     station name or location.
                   </Text>
-
                 </View>
               )}
-
           </>
         }
-
         ListFooterComponent={
           !loading &&
           filteredStations.length > 0 ? (
@@ -430,7 +443,6 @@ export default function HomeScreen() {
               ]}
               style={styles.footerCard}
             >
-
               <Ionicons
                 name="shield-checkmark"
                 size={28}
@@ -438,7 +450,6 @@ export default function HomeScreen() {
               />
 
               <View style={styles.footerTextContainer}>
-
                 <Text style={styles.footerTitle}>
                   Safe & Reliable Charging
                 </Text>
@@ -447,14 +458,11 @@ export default function HomeScreen() {
                   Verified stations. Transparent
                   pricing. Easy booking.
                 </Text>
-
               </View>
-
             </LinearGradient>
           ) : null
         }
       />
-
     </View>
   );
 }
@@ -470,11 +478,25 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 
+  // =====================================================
+  // HEADER - FIXED
+  // =====================================================
+
   header: {
-    height: 75,
+    height: 90,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+
+    paddingHorizontal: 4,
+    paddingTop: 10,
+
+    zIndex: 100,
+    elevation: 100,
+  },
+
+  logoContainer: {
+    justifyContent: 'center',
   },
 
   smallGreeting: {
@@ -493,16 +515,33 @@ const styles = StyleSheet.create({
     color: '#00E5A8',
   },
 
+  // =====================================================
+  // PROFILE BUTTON - FIXED
+  // =====================================================
+
   headerButton: {
-    width: 43,
-    height: 43,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+
     borderWidth: 1,
     borderColor: 'rgba(0,229,168,0.25)',
     backgroundColor: '#0F172A',
+
     justifyContent: 'center',
     alignItems: 'center',
+
+    // Move button slightly down
+    marginTop: 12,
+
+    // Keep it above other elements
+    zIndex: 101,
+    elevation: 101,
   },
+
+  // =====================================================
+  // HERO
+  // =====================================================
 
   hero: {
     minHeight: 430,
@@ -637,6 +676,10 @@ const styles = StyleSheet.create({
     left: 20,
   },
 
+  // =====================================================
+  // STATS
+  // =====================================================
+
   statsRow: {
     flexDirection: 'row',
     gap: 8,
@@ -665,6 +708,10 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 
+  // =====================================================
+  // SEARCH
+  // =====================================================
+
   searchContainer: {
     height: 54,
     flexDirection: 'row',
@@ -683,6 +730,10 @@ const styles = StyleSheet.create({
     color: '#F8FAFC',
     fontSize: 14,
   },
+
+  // =====================================================
+  // SECTION
+  // =====================================================
 
   sectionHeader: {
     flexDirection: 'row',
@@ -726,6 +777,10 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
 
+  // =====================================================
+  // LOADING
+  // =====================================================
+
   loadingContainer: {
     paddingVertical: 60,
     alignItems: 'center',
@@ -736,6 +791,10 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontSize: 13,
   },
+
+  // =====================================================
+  // EMPTY
+  // =====================================================
 
   emptyContainer: {
     alignItems: 'center',
@@ -770,6 +829,10 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: 7,
   },
+
+  // =====================================================
+  // FOOTER
+  // =====================================================
 
   footerCard: {
     flexDirection: 'row',

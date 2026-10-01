@@ -39,6 +39,20 @@ export default function RootLayout() {
             title: 'Station Details',
           }}
         />
+
+        <Stack.Screen
+          name="bookings/index"
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="bookings/station"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack>
     </ThemeProvider>
   );
